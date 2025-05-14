@@ -73,19 +73,102 @@ def cotacao():
     try:
         resp = requests.get(url, timeout=5)
         if resp.status_code != 200:
-            return jsonify({"erro": "Falha na API externa"}), 502
+            return render_error("Falha na API externa"), 502
 
         dados = resp.json()
-        if f"{moeda}BRL" in dados:
-            valor = float(dados[f"{moeda}BRL"]["bid"])
-            return jsonify({
-                "moeda": moeda,
-                "cotacao_em_brl": round(valor, 2)
-            })
+        key = f"{moeda}BRL"
+        if key in dados:
+            valor = float(dados[key]["bid"])
+            nome = dados[key]["name"]
+            return render_html(moeda, valor, nome)
         else:
-            return jsonify({"erro": "Moeda inválida ou não encontrada"}), 400
+            return render_error("Moeda inválida ou não encontrada"), 400
     except Exception as e:
-        return jsonify({"erro": str(e)}), 500
+        return render_error(str(e)), 500
+
+def render_html(moeda, valor, nome):
+    return f"""
+    <html>
+        <head>
+            <title>Cotação de {moeda}</title>
+            <style>
+                body {{
+                    font-family: Arial, sans-serif;
+                    background: linear-gradient(to right, #e3f2fd, #ffffff);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                }}
+                .card {{
+                    background-color: white;
+                    border-radius: 12px;
+                    padding: 40px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                    text-align: center;
+                    max-width: 400px;
+                    width: 100%;
+                }}
+                .icon {{
+                    font-size: 3em;
+                    color: #2d87f0;
+                }}
+                h2 {{
+                    margin: 10px 0;
+                    color: #2d87f0;
+                }}
+                p {{
+                    font-size: 1.2em;
+                    color: #333;
+                }}
+            </style>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        </head>
+        <body>
+            <div class="card">
+                <div class="icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <h2>{nome}</h2>
+                <p><strong>Moeda:</strong> {moeda}</p>
+                <p><strong>Valor em BRL:</strong> R$ {valor:.2f}</p>
+            </div>
+        </body>
+    </html>
+    """
+
+def render_error(mensagem):
+    return f"""
+    <html>
+        <head>
+            <title>Erro</title>
+            <style>
+                body {{
+                    font-family: Arial;
+                    background-color: #fff0f0;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                }}
+                .card {{
+                    background: white;
+                    padding: 30px;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 8px rgba(255, 0, 0, 0.2);
+                    text-align: center;
+                    color: red;
+                }}
+            </style>
+        </head>
+        <body>
+            <div class="card">
+                <h2>Erro</h2>
+                <p>{mensagem}</p>
+            </div>
+        </body>
+    </html>
+    """
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
