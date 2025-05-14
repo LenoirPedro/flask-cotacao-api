@@ -32,6 +32,64 @@ if __name__ == "__main__":
 
 @app.route("/")
 def index():
-    return "API de Cotação Online! Use /cotacao?moeda=USD"
+    return """
+    <html>
+        <head>
+            <title>API de Cotação</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f9;
+                    text-align: center;
+                    padding: 50px;
+                }
+                h1 {
+                    color: #2d87f0;
+                    font-size: 2.5em;
+                }
+                .content {
+                    background-color: #fff;
+                    border-radius: 10px;
+                    padding: 30px;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    width: 60%;
+                    margin: 0 auto;
+                    text-align: left;
+                }
+                .btn {
+                    background-color: #2d87f0;
+                    color: white;
+                    padding: 12px 24px;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    font-weight: bold;
+                    display: inline-block;
+                    margin-top: 20px;
+                }
+                .btn:hover {
+                    background-color: #1d67c0;
+                }
+                footer {
+                    margin-top: 30px;
+                    font-size: 0.9em;
+                    color: #aaa;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>Bem-vindo à API de Cotação</h1>
+            <div class="content">
+                <p>Esta API retorna a cotação em tempo real das moedas.</p>
+                <p>Para verificar a cotação de uma moeda específica, use a seguinte URL:</p>
+                <p><code>/cotacao?moeda=USD</code> para ver a cotação do dólar.</p>
+                <a href="/cotacao?moeda=USD" class="btn">Ver cotação do Dólar</a>
+            </div>
+            <footer>
+                <p>API desenvolvida para mostrar a cotação das moedas em tempo real.</p>
+            </footer>
+        </body>
+    </html>
+    """
+
 
 
